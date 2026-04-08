@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative — Design </title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --bg2: #111118; --surface: #1a1a24;
+      --border: rgba(255,255,255,0.08); --text: #f0f0f5; --muted: #888899;
+      --accent: #6c63ff; --accent2: #ff6584; --radius: 16px;
+      --font: 'Segoe UI', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .btn {
+      display: inline-block; padding: .75rem 1.75rem; border-radius: 50px;
+      font-weight: 600; font-size: .95rem; cursor: pointer;
+      transition: transform .2s, box-shadow .2s; border: none; font-family: var(--font);
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn--primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 24px rgba(108,99,255,.35); }
+    .btn--primary:hover { box-shadow: 0 8px 32px rgba(108,99,255,.5); }
+    .btn--outline { border: 1.5px solid var(--border); color: var(--text); background: transparent; }
+    .btn--outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn--ghost { color: var(--muted); background: transparent; }
+    .btn--ghost:hover { color: var(--text); }
+
+    /* ── Theme Switcher ── */
+    .theme-switcher { position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: .6rem; }
+    .theme-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); cursor: pointer; transition: transform .2s, border-color .2s; }
+    .theme-btn:hover, .theme-btn.active { transform: scale(1.25); border-color: #fff; }
+    .theme-btn[data-theme="default"] { background: linear-gradient(135deg,#6c63ff,#ff6584); }
+    .theme-btn[data-theme="ocean"]   { background: linear-gradient(135deg,#0ea5e9,#06b6d4); }
+    .theme-btn[data-theme="forest"]  { background: linear-gradient(135deg,#22c55e,#84cc16); }
+    .theme-btn[data-theme="sunset"]  { background: linear-gradient(135deg,#f97316,#ec4899); }
+    .theme-btn[data-theme="mono"]    { background: linear-gradient(135deg,#e2e8f0,#94a3b8); }
+    @media (max-width: 768px) { .theme-switcher { right: .75rem; } }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem; background: rgba(10,10,15,.85);
+      backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); transition: padding .3s;
+    }
+    .nav.scrolled { padding: .85rem 3rem; }
+    .nav__logo { display: flex; align-items: center; }
+    .nav__logo img { height: 60px; width: 60px; display: block; object-fit: contain; border-radius: 50%; background: #fff; padding: 6px; }
+    .nav__links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav__links a { font-size: .9rem; color: var(--muted); transition: color .2s; }
+    .nav__links a:hover { color: var(--text); }
+    .nav__burger { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden; padding: 8rem 2rem 4rem;
+    }
+    .hero__bg { position: absolute; inset: 0; pointer-events: none; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .35; animation: float 8s ease-in-out infinite; }
+    .blob--1 { width: 500px; height: 500px; background: var(--accent); top: -100px; left: -100px; }
+    .blob--2 { width: 400px; height: 400px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: -3s; }
+    .blob--3 { width: 300px; height: 300px; background: #43e97b; top: 40%; left: 50%; animation: float3 8s ease-in-out infinite; animation-delay: -5s; }
+    @keyframes float { 0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-30px) scale(1.05);} }
+    @keyframes float3 { 0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,calc(-50% - 30px)) scale(1.05);} }
+    .hero__content { position: relative; z-index: 1; max-width: 780px; }
+    .hero__tag { font-size: .85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+    .hero__title { font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 1.5rem; }
+    .hero__sub { font-size: 1.15rem; color: var(--muted); max-width: 520px; margin: 0 auto 2.5rem; }
+    .hero__actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .hero__scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: .8rem; color: var(--muted); letter-spacing: 2px; animation: bounce 2s infinite; }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);} }
+
+    /* ── Marquee ── */
+    .marquee { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1rem 0; background: var(--bg2); }
+    .marquee__track { display: flex; gap: 2rem; width: max-content; animation: marquee 20s linear infinite; font-size: .9rem; color: var(--muted); font-weight: 500; }
+    .marquee__track span { white-space: nowrap; }
+    @keyframes marquee { from{transform:translateX(0);}to{transform:translateX(-50%);} }
+
+    /* ── Sections ── */
+    .section { padding: 7rem 0; }
+    .section--dark { background: var(--bg2); }
+    .section__tag { font-size: .8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: .75rem; }
+    .section__title { font-size: clamp(1.8rem,4vw,3rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 3rem; }
+
+    /* ── Cards ── */
+    .grid--3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 1.5rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform .3s, box-shadow .3s; cursor: pointer; }
+    .card:hover { box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+    .card__img { height: 200px; transition: transform .4s; }
+    .card:hover .card__img { transform: scale(1.04); }
+    .card__body { padding: 1.5rem; }
+    .card__cat { font-size: .75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); }
+    .card__title { font-size: 1.2rem; font-weight: 700; margin: .4rem 0 .5rem; }
+    .card__desc { font-size: .9rem; color: var(--muted); }
+
+    /* ── Services ── */
+    .services { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1.5rem; }
+    .service { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: border-color .3s, transform .3s; }
+    .service:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .service__icon { font-size: 2rem; margin-bottom: 1rem; }
+    .service h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+    .service p { font-size: .9rem; color: var(--muted); }
+
+    /* ── About ── */
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .about__text p { color: var(--muted); font-size: 1.05rem; }
+    .about__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .stat { text-align: center; }
+    .stat__num { display: block; font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat__label { font-size: .85rem; color: var(--muted); }
+
+    /* ── Contact ── */
+    .contact { max-width: 700px; }
+    .form { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+    .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form__input { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .9rem 1.2rem; color: var(--text); font-size: .95rem; font-family: var(--font); transition: border-color .2s; outline: none; width: 100%; }
+    .form__input:focus { border-color: var(--accent); }
+    .form__input::placeholder { color: var(--muted); }
+    .form__textarea { min-height: 140px; resize: vertical; }
+
+    /* ── Footer ── */
+    .footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 2rem 3rem; border-top: 1px solid var(--border); font-size: .85rem; color: var(--muted); }
+    .footer__links { display: flex; gap: 1.5rem; }
+    .footer__links a:hover { color: var(--text); }
+
+    /* ── Reveal ── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .nav { padding: 1rem 1.5rem; }
+      .nav__links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg2); padding: 1.5rem; border-bottom: 1px solid var(--border); gap: 1rem; }
+      .nav__links.open { display: flex; }
+      .nav__burger { display: block; }
+      .about { grid-template-columns: 1fr; gap: 3rem; }
+      .form__row { grid-template-columns: 1fr; }
+      .footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">
+      <img src="logo.jpg" alt="Creative Design Logo" />
+    </div>
+    <ul class="nav__links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="btn btn--outline">Let's Talk</a></li>
+    </ul>
+    <button class="nav__burger" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__bg">
+      <span class="blob blob--1"></span>
+      <span class="blob blob--2"></span>
+      <span class="blob blob--3"></span>
+    </div>
+    <div class="hero__content">
+      <h1 class="hero__tag" style="font-size:clamp(2.5rem,6vw,5rem);letter-spacing:-1px;color:#ffffff;">Creative Design</h1>
+      <h4 class="hero__title" style="font-size:clamp(1.2rem,3vw,2rem)"><span class="gradient-text">Design | Print | Delivery</span></h4>
+      <p class="hero__sub">Branding, Flex Print, Motion Graphic & Video Editing  .</p>
+      <div class="hero__actions">
+        <a href="#work" class="btn btn--primary">View Our Work</a>
+        <a href="#about" class="btn btn--ghost">Learn More</a>
+      </div>
+    </div>
+    <div class="hero__scroll-hint">Check ↓</div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Branding</span><span>·</span><span>Flex Print</span><span>·</span>
+      <span>Motion</span><span>·</span><span>Businnes Card</span><span>·</span>
+      <span>Strategy</span><span>·</span><span>Illustration</span><span>·</span>
+      <span>Branding</span><span>·</span><span>Video Editing </span><span>·</span>
+      <span>Motion</span><span>·</span><span>Web Dev</span><span>·</span>
+      <span>Strategy</span><span>·</span><span>Graphic Designing</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- Work -->
+  <section class="section" id="work">
+    <div class="container">
+      <p class="section__tag">Selected Work</p>
+      <h2 class="section__title">Projects we're proud of.</h2>
+      <div class="grid grid--3">
+        <div class="card" data-tilt>
+          <div class="card__img" style="background:linear-gradient(135deg,#6c63ff,#a18cd1)"></div>
+          <div class="card__body"><span class="card__cat">Branding</span><h3 class="card__title">Flex Print</h3><p class="card__desc"></p></div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="card__img" style="background:linear-gradient(135deg,#ff6584,#f7971e)"></div>
+          <div class="card__body"><span class="card__cat">Motion</span><h3 class="card__title">Businnes Card</h3><p class="card__desc"></p></div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="card__img" style="background:linear-gradient(135deg,#43e97b,#38f9d7)"></div>
+          <div class="card__body"><span class="card__cat">Strategy</span><h3 class="card__title">Illustration</h3><p class="card__desc"></p></div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="card__img" style="background:linear-gradient(135deg,#f7971e,#ffd200)"></div>
+          <div class="card__body"><span class="card__cat">Branding</span><h3 class="card__title">Video Editing</h3><p class="card__desc"></p></div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="card__img" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)"></div>
+          <div class="card__body"><span class="card__cat">Motion</span><h3 class="card__title">Web Dev</h3><p class="card__desc"></p></div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="card__img" style="background:linear-gradient(135deg,#0f2027,#2c5364)"></div>
+          <div class="card__body"><span class="card__cat">Strategy</span><h3 class="card__title">Graphic Designing</h3><p class="card__desc"></p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section section--dark" id="services">
+    <div class="container">
+      <p class="section__tag">What We Do</p>
+      <h2 class="section__title">Services built for impact.</h2>
+      <div class="services">
+        <div class="service"><div class="service__icon">✦</div><h3>Brand Identity</h3><p>Logo, color, typography, and voice — everything that makes you, you.</p></div>
+        <div class="service"><div class="service__icon">◈</div><h3>UI / UX Design</h3><p>Interfaces that feel intuitive and look stunning across every device.</p></div>
+        <div class="service"><div class="service__icon">⬡</div><h3>Motion Design</h3><p>Animations and video that bring your brand to life.</p></div>
+        <div class="service"><div class="service__icon">◉</div><h3>Web Development</h3><p>Fast, accessible, and beautifully coded websites and apps.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section" id="about">
+    <div class="container about">
+      <div class="about__text">
+        <p class="section__tag">About Us</p>
+        <h2 class="section__title">Design is how it works, not just how it looks.</h2>
+        <p>We're a small, focused studio that believes great design solves real problems. No bloated teams, no endless revisions — just sharp thinking and clean execution.</p>
+        <a href="#contact" class="btn btn--primary" style="margin-top:2rem">Work With Us</a>
+      </div>
+      <div class="about__stats">
+        <div class="stat"><span class="stat__num" data-count="120">0</span><span class="stat__label">Projects Delivered</span></div>
+        <div class="stat"><span class="stat__num" data-count="8">0</span><span class="stat__label">Years of Experience</span></div>
+        <div class="stat"><span class="stat__num" data-count="40">0</span><span class="stat__label">Happy Clients</span></div>
+        <div class="stat"><span class="stat__num" data-count="12">0</span><span class="stat__label">Awards Won</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section section--dark" id="contact">
+    <div class="container contact">
+      <p class="section__tag">Get In Touch</p>
+      <h2 class="section__title">Got a project in mind?</h2>
+      <form class="form" id="contactForm" novalidate>
+        <div class="form__row">
+          <input class="form__input" type="text" placeholder="Your Name" required />
+          <input class="form__input" type="email" placeholder="Email Address" required />
+        </div>
+        <input class="form__input" type="text" placeholder="Project Type (Branding, UI, Web...)" />
+        <textarea class="form__input form__textarea" placeholder="Tell us about your project..." required></textarea>
+        <button type="submit" class="btn btn--primary">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div>© 2026 Creative Design. All rights reserved.</div>
+    <div class="footer__links">
+      <a href="#">Twitter</a><a href="#">Dribbble</a><a href="#">Behance</a><a href="#">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher" aria-label="Change theme">
+    <button class="theme-btn active" data-theme="default" title="Default"></button>
+    <button class="theme-btn" data-theme="ocean"   title="Ocean"></button>
+    <button class="theme-btn" data-theme="forest"  title="Forest"></button>
+    <button class="theme-btn" data-theme="sunset"  title="Sunset"></button>
+    <button class="theme-btn" data-theme="mono"    title="Mono"></button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
